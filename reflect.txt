@@ -1,0 +1,374 @@
+/*
+*****************************************************************************
+						  Milestone 
+Full Name  : Yuchi Zheng
+Student ID#: 025 848 151
+Email      : yzheng103@myseneca.ca
+Section    : NFF
+Date       : 3rd, December, 2022
+
+Authenticity Declaration:
+I have done all the coding by myself and only copied the code
+that my professor provided to complete my workshops and assignments.
+*****************************************************************************
+*/ 
+
+//Part 1: course reflect
+
+Hi Professor, I can't believe that it is close to the end of the semester. Honestly, I enjoyed this
+course even though I met a lot of problems during each workshop and the final project. The important
+thing is that I really learned a lot in this course. You explain our questions very well inside of class
+and outside of class. It is really helpful.  Below are the details about the reflect.
+
+1. Lecture class and supplemental video:
+	The lecture class and supplemental video are amazing. You teach organized with clear code examples.
+	The only thing is that could you please release the weekly slides and code examples on Sunday?
+	Because I read the weekly notes on Sunday. After that, I want to see more code examples which could
+	help me understand deeply.
+	
+2. The lab class:
+	The lab class is really really helpful. I don't have any improvement suggestions about it. 
+
+3. The teams channels:
+	They are necessary because I can see any news and updates in time. 
+	
+4. The quiz:
+	The most of questions in the first quiz and the second quiz don't have any coding part. I think 
+	that adding some code to the first and second quizzes could be easier for students to read and
+	answer. Just like the rest of the quiz(3-9).
+	
+5. Actually, there is no big place to change. Honestly, you have already done a great job. 
+
+Last, I want to say: Thank you very much, professor. You are an easygoing professor and willing to talk with
+students patiently and share your knowledge with students. I am happy to talk with you after the weekly lab class.
+Thank you!
+
+
+//Part2: milestone reflect
+/*
+*****************************************************************************
+						  Milestone - #1
+Date       : 5th, November, 2022
+*****************************************************************************
+*/ 
+
+In milestone #1, I learned more about the class variable, class functions, and the file read by 
+the string function tools. I don't need to code a lot in milestone #1 but I met some problems.
+The following are the problems.
+
+1. The first problem is the "LINK 2005" error because I initialized the "class variable" directly 
+	under the class in the header file like below:
+	
+	//wrong initial method
+	//Utinities.h
+	class Utinities{...}
+	char Utilities::m_delimiter{};
+	
+	//Station.h
+	class Station{...}
+	size_t Station::m_widthField{};
+	int Station::id_generator{};
+	
+	Honestly, I met this "LINK 2005" error in workshop #1 because I didn't initialize the "external variable"
+	in the cpp file. So I tried moving the initial step in the "Utilities.cpp" and "Station.cpp". Finally, it 
+	works because we should follow the "one definition rule".
+	  
+2. The second problem is the function "extractToken()". My final version is like below. In this function,
+	I spent a lot of time designing the logic because there are many details that should be added. 
+	
+	1) The first is the "std:string:npos". I googled it one line (The value of "npos" is "-1";) and used 
+		it to check whether the delimiter is found. Then, we should add a condition to check whether the 
+		the delimiter is found in the "nex_pos". 
+		
+	2) The second problem is where I should set the "more" as "false". If I didn't set "more" to false in 
+		the "else" part in the below code, there will be an error of "infinite output".
+
+	//function "extractToken()"
+	std::string Utilities::extractToken(const std::string& str, size_t& next_pos, bool& more) {
+		std::string token{}, restStr{};
+		size_t n{};
+
+		if (more) {
+			n = str.find(m_delimiter, next_pos);
+
+			if (n != std::string::npos) { 
+				if (n == next_pos) {
+					more = false;
+					throw "Error! A delimiter is found at next_pos";
+				}
+				else {
+					token = str.substr(next_pos, (n - next_pos));//2nd parameter is length
+					token = trim(token);
+
+					next_pos = n + 1;// n + 1;
+					str[n] == '\n'? more = false : more = true;
+				}
+			}
+			else {//can't find delimiter
+				more = false;
+				token = str.substr(next_pos);
+				token = trim(token);
+			}
+
+			if (m_widthField < token.length()) {
+				m_widthField = token.length();
+			}
+		}
+		return token;
+	}
+
+3. The third problem is about the field width of the item name like below. The first "Station(summary)" is 
+	the wrong output with the field width, the second output is correct. To solve this problem, I used the 
+	visual studio debug tool to check the status of variables in the function "extractToken()". This 
+	function is shown above. Thanks to the debug tool, I found the "token" is invalid because I used the
+	string.substr() in the wrong way. In the beginning, I coded it like token = str.substr(next_pos, n). I 
+	thought it will take the character from position "next_pos" to position "n". At this moment, I checked
+	the "substr()" on google. I found the 2nd parameter should be the length that you want to take. So, I
+	changed "token = str.substr(next_pos, n)" to "token = str.substr(next_pos, (n - next_pos))". Finally, the 
+	problem has been solved.
+
+	//wrong field width output
+	========================================
+	=         Stations (summary)           =
+	========================================
+	001 | Armchair                      | 654321 |
+	002 | Bed                           | 123456 |
+	003 | Dresser                       | 056789 |
+	...
+
+	//correct field width output
+	========================================
+	=         Stations (summary)           =
+	========================================
+	001 | Armchair        | 654321 |
+	002 | Bed             | 123456 |
+	003 | Dresser         | 056789 |
+	...
+
+
+/*
+*****************************************************************************
+						  Milestone - #2
+Date       : 25th, November, 2022
+*****************************************************************************
+*/ 
+
+1. I met a memory leak in ms2 which is from the move "operator=". My code is like below code:
+	In the beginning, I didn't delete the memory of "m_lstItem" and "m_lstItem[i]" in this move
+	operator because I didn't add them in workshop 4. So I am pretty confused when I met the 
+	memory leak problem. Then I tried to find another place that could lead to the memory
+	leak. I also compared the "main()" of ms2 and workshop4. So I just tried to add the "delete"
+	steps like in the copy constructor. Then the problem is solved. Later I confirmed this
+	with my professor. We should delete the memory in the future in the move operator because
+	there is no guarantee about the memory of the previous object is deleted. 
+
+	//code
+   CustomerOrder& CustomerOrder::operator=(CustomerOrder&& toMove) noexcept {
+      if (this != &toMove) {
+         //delete 
+         for (size_t i = 0; i < m_cntItem; i++) {
+            delete m_lstItem[i];
+            m_lstItem[i] = nullptr;
+         }
+         delete[] m_lstItem;
+
+         m_lstItem = toMove.m_lstItem;
+         toMove.m_lstItem = nullptr;
+
+         m_name = toMove.m_name;
+         toMove.m_name.clear();
+
+         m_product = toMove.m_product;
+         toMove.m_product.clear();
+
+         m_cntItem = toMove.m_cntItem;
+         toMove.m_cntItem = 0;
+      }
+      return *this;
+   }
+
+/*
+*****************************************************************************
+						  Milestone - #3
+Date       : 2nd, December, 2022
+*****************************************************************************
+*/ 
+
+1. The constructor of LineManager() is the most difficult part which I met of the whole project. I 
+	tried a few methods in this constructor. The below code #1 is my final version. 
+
+	1)My main logic is to get the first station(item) into the vector "m_activeLine". Then I put all the second
+		stations(item) into another vector "nextStations". Because there are two stations on each record line,
+		I check "more" two times and last I used "find_if" and "setNextStation()" to locate the iterator(pointer)
+		of the next station. 
+
+	2)In the beginning, there is an error when I passed a string variable into the "find" algorithm like:  
+
+		auto iter = find(stations.begin(), stations.end(), std::string stationStr) {}
+		
+		Then I met a compile error which is similar like "there is no == operator". The bottom error toolbox showed 
+		a lot of information. At that time, I didn't realize that I put the wrong type of variable into the last position 
+		of "find" algorithm. So I spent some time here dealing with the error. 
+
+	3) The process of "find the first station" is less hard than the "store file data and set of next station".
+		In the beginning, I didn't know that the "find_if" will return "iterator.end()" so I checked other
+		algorithms online and tried to find a better algorithm. In the end, I saw an example that the returning 
+		"iterator.end()" means there is no element found. After that, it is pretty easy to find the first station.
+		
+	4) Workshop:
+		The feedback is the most important thing to me. The comments can help me to improve my future code. 
+		I don't have any issue with the criteria because I just want to focus on how to improve my code. 
+
+	code #1:
+		LineManager::LineManager(const std::string& file, const std::vector<Workstation*>& stations) {
+		  try {
+			 vector<std::string> records{};
+			 std::vector<Workstation*> nextStations{};
+			 std::string record{}, stationToken1{}, stationToken2{};
+			 Utilities util{};
+			 bool more = true;
+			 size_t pos = 0u;                        
+			
+			 //open file
+			 ifstream iFile(file);
+			 while (!iFile.eof()) {
+				getline(iFile, record);
+				records.push_back(std::move(record));
+			 }
+			 iFile.close();
+
+			 //load data into m_activeLine
+			 for_each(records.begin(), records.end(), [&](auto str) {
+				more = true;
+				pos = 0u;
+
+				//first station(item) in record line
+				if (more) {
+				   stationToken1 = util.extractToken(str, pos, more);
+
+				   auto iter = find_if(stations.begin(), stations.end(), [&](Workstation* ws) {
+					  return ws->getItemName() == stationToken1;
+					  });
+				   m_activeLine.push_back(*iter); 
+				}
+
+				//second station(item) in record line
+				if (more) {
+				   stationToken2 = util.extractToken(str, pos, more);
+
+				   auto iter = find_if(stations.begin(), stations.end(), [&](Workstation* ws) {
+					  return ws->getItemName() == stationToken2;
+					  });
+				   nextStations.push_back(*iter);
+
+				   m_activeLine.back()->setNextStation(*iter);
+				}
+				else {//last station
+				   nextStations.push_back(nullptr);      
+				   m_activeLine.back()->setNextStation();
+				}
+				});
+
+			 //set m_firstStation
+			 //found the item which is not in the "next items"
+			 for_each(m_activeLine.begin(), m_activeLine.end(), [&](Workstation* ws) {
+				if (find(nextStations.begin(), nextStations.end(), ws) == nextStations.end()) {
+				   m_firstStation = ws;
+				}
+				});
+			  
+			 //updates the total number of orders in the g_pending queue
+			 m_cntCustomerOrder = g_pending.size();
+		  }
+		  catch (const std::string& msg) {
+			 throw msg;
+		  }
+		  catch (...) {
+			 throw std::string("Error in LineManager.");
+		  } 
+	   }
+   
+
+2. I met three problems in function "attemptToMoveOrder()". 
+
+	1)The first problem is when I run the program, only Professor.Cornel's order was filled. There are 
+	no other professors' orders. This error is really hard to find. Then, I started to debug from the 
+	"run()" function and watched the variables of the different objects. After many loops and I found 
+	professor.Cornel'S is always in the first position of "m_orders". At this point, I went back to 
+	check the instruction of the project and professor.Hong's video. I found this "m_orders" is a deque
+	which is "entering the back and exiting the front". So after moving the current customer order into 
+	the next station, I have to do "m_orders.pop_front()". Then the next customer can be the first order.
+	
+	2) The second problem is I met an error like "empty deque.front() is called". So I also used the 
+	debug tool to debug the program and watch the places which used the "deque.front()". After that, I 
+	found that I should add a precondition like "if (m_orders.size())" before the process of "move order
+	into the next workstation"
+	
+	3) The third problem I didn't put the "std::move" in the "order.push_back(std::move(m_orders.front()))".
+	I forget that I have already deleted the "copy constructor" in ms2 so it took some time to remember this.
+	
+	//correct code:
+	   bool Workstation::attemptToMoveOrder() {
+      bool done{false};
+
+      if (m_orders.size()) {// empty m_orders and m_orders.front() cause error
+         if (m_orders.front().isItemFilled(getItemName()) || !getQuantity()) {
+
+            if (m_pNextStation) {
+               m_pNextStation->m_orders.push_back(std::move(m_orders.front()));//copy delete in customer copy constructor
+            }
+            else {
+               //complete
+               if (m_orders.front().isOrderFilled()) {
+                  g_completed.push_back(std::move(m_orders.front()));//;
+               }
+               //incomplete
+               else {
+                  g_incomplete.push_back(std::move(m_orders.front()));//
+               }
+            }
+
+            m_orders.pop_front();//entering the back and exiting the front. delete current m_order in current workstation
+            done = true;
+         }
+      }
+      return done;
+   }
+   
+
+3. The last problem is in fillItem(). In my output, there is a missing output about "Unable to fill Rania A., 
+	2-Room Home Office and Bedroom [Desk]". In the beginning, I thought there is a problem with the file read and
+	passing the data. Then I used the debug tool and found that I should delete the flag "done" in the below code.
+	In the "Unable to fill" part, if the item can't be filled, the flag should be still false. So the unfilled
+	items can be displayed.
+	
+   void CustomerOrder::fillItem(Station& station, std::ostream& os) {
+      bool done{ false };
+
+      for (size_t i = 0; i < m_cntItem && !done; i++) {
+         if (m_lstItem[i]->m_itemName == station.getItemName() ){//!m_lstItem[i]->m_isFilled
+
+            if (!m_lstItem[i]->m_isFilled && station.getQuantity() > 0 ) {
+           
+               station.updateQuantity();
+               m_lstItem[i]->m_serialNumber = station.getNextSerialNumber();
+               m_lstItem[i]->m_isFilled = true;
+               done = true;
+
+               os << "    Filled " << m_name << ", " << m_product << " [" 
+                  << m_lstItem[i]->m_itemName << ']' << endl;
+            }
+            else if (!m_lstItem[i]->m_isFilled && station.getQuantity() == 0) {
+               os << "    Unable to fill " << m_name << ", " << m_product << " ["
+                  << m_lstItem[i]->m_itemName << ']' << endl;
+               //done = true;
+            }
+         }
+      }
+   }
+   
+Above are all the problems that I met in ms3. It is pretty hard to connect every module in the beginning if we 
+can't understand them well. 
+
+Thank you!
+
