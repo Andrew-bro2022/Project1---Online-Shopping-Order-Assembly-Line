@@ -1,11 +1,6 @@
-//	Milestone #3
+// Utilities.cpp
 // Name:	Yuchi Zheng
-// Seneca Student ID:	025 848 151
-// Seneca email:	yzheng103@myseneca.ca
-// Date of completion: 2nd, December, 2022
-//
-// I confirm that I am the only author of this file
-// and the content was created entirely by me.
+
 
 #define _CRT_SECURE_NO_WARNINGS
 #include "Utilities.h"
@@ -28,7 +23,7 @@ namespace sdds {
 		size_t n{};
 
 		if (more) {
-			n = str.find(m_delimiter, next_pos);// n 是从[0] 开始计算; static access
+			n = str.find(m_delimiter, next_pos);// n 脢脟麓脫[0] 驴陋脢录录脝脣茫; static access
 
 			if (n != std::string::npos) { //std::string::npos = -1
 				if (n == next_pos) {
