@@ -1,9 +1,9 @@
 # Project1---Online-Shopping-Order-Assembly-Line
-Summary: Using C++ to develop a simulation of an assembly line with any number of stations. This application can help customers to autofill the requested orders and products depending on different sceneries. Below is the flow chart. 
+**Summary**: Using C++ to develop a simulation of an assembly line with any number of stations. This application can help customers to autofill the requested orders and products depending on different sceneries. Below is the flow chart. 
 
 ![assemblyline](https://user-images.githubusercontent.com/97316979/211911917-ab84ff79-fdd4-4af5-9c13-056dfb72dae5.jpg)
 
-More details about the project:
+**More details about the project**:
 
 -The assembly line in the solution consists of a set of workstations each of which holds a set of stock items, which are specific to the station. 
 
@@ -23,7 +23,7 @@ More details about the project:
 
 
 
-Technical Highlight Parts:
+**Technical Highlight Parts**:
 
 1. Part 1:
 Part 1 implements and tests the Utilities and Station modules.
